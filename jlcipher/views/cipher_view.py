@@ -3,60 +3,61 @@ import wx.richtext
 
 
 class CipherPanel(wx.Panel):
-    '''
-        Displays 2 large text boxes and cipher options.
+    """
+    Panel that handles ciphers.
+    """
 
-        If text is provided, the first text box will contain it.
-    '''
     def __init__(self, parent, size, text=""):
         super().__init__(parent=parent, size=size)
 
         self.cipher = True
-
         self.SetBackgroundColour((20, 20, 25))
+
+        #  Resources
         font1 = wx.Font(14, wx.MODERN, wx.NORMAL, wx.NORMAL, False, u'Consolas')  # noqa: E501
         font2 = wx.Font(12, wx.MODERN, wx.NORMAL, wx.NORMAL, False, u'Consolas')  # noqa: E501
-        bmp1 = wx.ArtProvider.GetBitmap(id=wx.ART_FLOPPY, client=wx.ART_OTHER, size=(20, 20))  # noqa: E501
         bmp_goforward = wx.ArtProvider.GetBitmap(id=wx.ART_GO_FORWARD, client=wx.ART_OTHER, size=(25, 20))  # noqa: E501
+        icon_operation = wx.StaticBitmap(parent=self, id=wx.ID_ANY, bitmap=bmp_goforward)  # noqa: E501
+        icon_cipher = wx.StaticBitmap(parent=self, id=wx.ID_ANY, bitmap=bmp_goforward)  # noqa: E501
+        icon_key = wx.StaticBitmap(parent=self, id=wx.ID_ANY, bitmap=bmp_goforward)  # noqa: E501
 
         #  Panel elements
         self.input_text = wx.TextCtrl(parent=self, value=text, style=wx.TE_MULTILINE | wx.TE_RICH | wx.BORDER_SUNKEN)  # noqa: E501
+        self.output_text = wx.TextCtrl(parent=self, value=text, style=wx.TE_MULTILINE | wx.TE_RICH | wx.BORDER_SUNKEN | wx.TE_READONLY)  # noqa: E501
+        input_operation_label = wx.StaticText(parent=self, id=wx.ID_ANY, label="Operation:")  # noqa: E501
+        input_cipher_choice_label = wx.StaticText(parent=self, id=wx.ID_ANY, label="Cipher:")  # noqa: E501
+        input_key_label = wx.StaticText(parent=self, id=wx.ID_ANY, label="Key:")  # noqa: E501
+        self.input_operation = wx.Choice(parent=self, choices=["Cipher", "Decipher"])  # noqa: E501
+        self.input_cipher_choice = wx.Choice(parent=self, choices=["Caesar", "Vigenère"])  # noqa: E501
+        self.input_key_caesar = wx.SpinCtrl(parent=self, id=1, value='3', min=1, max=917631, style=wx.SP_ARROW_KEYS | wx.SP_WRAP)  # noqa: E501
+        self.input_key_word = wx.TextCtrl(parent=self, id=2, value=text, style=wx.TE_RICH | wx.BORDER_NONE)  # noqa: E501
+        cipher_button = wx.Button(parent=self, id=1, size=(150, -1), label="Translate")  # noqa: E501
+
+        # Panel Elements Configs
         self.input_text.SetFont(font2)
         self.input_text.SetBackgroundColour(wx.Colour(12, 12, 17))
         self.input_text.SetForegroundColour(wx.Colour(255, 255, 255))
-        self.output_text = wx.TextCtrl(parent=self, value=text, style=wx.TE_MULTILINE | wx.TE_RICH | wx.BORDER_SUNKEN | wx.TE_READONLY)  # noqa: E501
         self.output_text.SetFont(font2)
         self.output_text.SetBackgroundColour(wx.Colour(12, 12, 17))
         self.output_text.SetForegroundColour(wx.Colour(255, 255, 255))
-        icon_operation = wx.StaticBitmap(parent=self, id=wx.ID_ANY, bitmap=bmp_goforward)
-        input_operation_label = wx.StaticText(parent=self, id=wx.ID_ANY, label="Operation:")  # noqa: E501
+        self.output_text.SetValue("Currently only working with English.")
         input_operation_label.SetFont(font1)
-        input_operation_label.SetForegroundColour((255, 255, 255))
-        icon_cipher = wx.StaticBitmap(parent=self, id=wx.ID_ANY, bitmap=bmp_goforward)
-        input_cipher_choice_label = wx.StaticText(parent=self, id=wx.ID_ANY, label="Cipher:")  # noqa: E501
+        input_operation_label.SetForegroundColour((255, 255, 255))  # noqa: E501
         input_cipher_choice_label.SetFont(font1)
         input_cipher_choice_label.SetForegroundColour((255, 255, 255))
-        input_key_label = wx.StaticText(parent=self, id=wx.ID_ANY, label="Key:")  # noqa: E501
-        icon_key = wx.StaticBitmap(parent=self, id=wx.ID_ANY, bitmap=bmp_goforward)
         input_key_label.SetFont(font1)
         input_key_label.SetForegroundColour((255, 255, 255))
-        self.input_operation = wx.Choice(parent=self, choices=["Decipher", "Cipher"])  # noqa: E501
         self.input_operation.SetSelection(0)
         self.input_operation.SetFont(font2)
-        self.input_cipher_choice = wx.Choice(parent=self, choices=["Caesar", "Vigenère"])  # noqa: E501
         self.input_cipher_choice.SetSelection(0)
         self.input_cipher_choice.SetFont(font2)
-        self.input_key_caesar = wx.SpinCtrl(parent=self, id=1, value='3', min=1, max=27, style=wx.SP_ARROW_KEYS | wx.SP_WRAP)  # noqa: E501
         self.input_key_caesar.SetFont(font1)
-        self.input_key_word = wx.TextCtrl(parent=self, id=2, value=text, style=wx.TE_RICH | wx.BORDER_NONE)  # noqa: E501
         self.input_key_word.SetValue("lemon")
         self.input_key_word.SetFont(font1)
         self.input_key_word.SetBackgroundColour(wx.Colour(12, 12, 17))
         self.input_key_word.SetForegroundColour(wx.Colour(255, 255, 255))
-        cipher_button = wx.Button(parent=self, id=1, size=(150, -1), label="Translate")  # noqa: E501
-        cipher_button.SetFont(font2)
-
         self.input_key_word.Hide()
+        cipher_button.SetFont(font2)
 
         #  Binds
         self.input_cipher_choice.Bind(wx.EVT_CHOICE, self.setup_key_field)
@@ -69,7 +70,7 @@ class CipherPanel(wx.Panel):
         horizontal_sizer = wx.BoxSizer(wx.HORIZONTAL)
         self.main_vertical_sizer = wx.BoxSizer(wx.VERTICAL)
 
-        #  Sizer layout
+        #  Sizer Configs
         input_operation_sizer.Add(window=icon_operation, proportion=0)
         input_operation_sizer.AddSpacer(size=10)
         input_operation_sizer.Add(window=input_operation_label, proportion=0)
@@ -101,10 +102,10 @@ class CipherPanel(wx.Panel):
 
     def get_operation(self):
         o = self.input_operation.GetSelection()
-        if o == 0:  # Decipher
-            return False
-        elif o == 1:  # Cipher
+        if o == 0:  # choice 1: Cipher
             return True
+        elif o == 1:  # choice 2: Deipher
+            return False
 
     def get_cipher(self):
         return self.input_cipher_choice.GetStringSelection()
@@ -134,6 +135,12 @@ class CipherPanel(wx.Panel):
 
 
 class BarPanel(wx.Panel):
+    """
+    Serves as a configurable separator
+     between panels (to be used with sizers).
+    TODO make configurable (rgb)
+    """
+
     def __init__(self, parent):
         super().__init__(parent=parent, size=(-1, 25))
         self.SetMaxSize(wx.Size(-1, 25))
