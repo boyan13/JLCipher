@@ -4,6 +4,8 @@ from ..controllers.cipher_controller import CipherController
 
 
 class MainApp(wx.App):
+    #  The mode variable accounts for dimensions and other configurations.
+
     def __init__(self, mode):
         self.mode = mode
         self.cipher_controller = CipherController()
@@ -19,25 +21,50 @@ class MainApp(wx.App):
         return True
 
     def translate(self, event):
-        decipher = self.frame.cipher_panel.get_operation()  # boolean
+        """
+        Gets the text from the input TextCtrl,
+         translates (ciphers or deciphers) it
+         and writes it to the output TextCtrl.
+        """
+
+        # Step 1: Extract all data and pass it to
+        # the controller so it can instantiate
+        # the appropriate cipher class
+        # (using the load() method)
+
+        to_cipher = self.frame.cipher_panel.get_operation()  # boolean; True=cipher; False=decipher # noqa:E501
         cipher_which = self.frame.cipher_panel.get_cipher()
         key = self.frame.cipher_panel.get_key()
         text = self.frame.cipher_panel.input_text.GetValue()
+        if text is None:  # Do nothing if there's no text inputted
+            return
 
         self.cipher_controller.load(cipher_which, text, key)
-        output = self.cipher_controller.translate(decipher)
-        self.frame.cipher_panel.output_text.SetValue(output)
+        try:
+            output = self.cipher_controller.translate(to_cipher)
+            self.frame.cipher_panel.output_text.SetValue(output)
+        except(ValueError):
+            wx.MessageBox('Values produced by this key go outside of recognized Unicode bounds. This key is invalid.',  # noqa: E501
+                          'Bad key.',
+                          wx.OK | wx.ICON_INFORMATION)
+        except(AttributeError):
+            # TODO implement vigenere and remove this except block
+            self.frame.cipher_panel.output_text.SetValue("Not implemented :(")
 
 
 class MainFrame(wx.Frame):
+    """
+    This is the only window that the app uses.
+    """
+
     def __init__(self, parent, title, pos, mode):
         super().__init__(parent=parent, title=title, size=mode["WINDOW_SIZE"], pos=pos)  # noqa: E501
 
         self.SetMinSize(wx.Size(mode["MIN_WINDOW_SIZE"]))
 
         self.cipher_panel = cipher_view.CipherPanel(parent=self, size=mode["WINDOW_SIZE"])  # noqa: E501
-        self.topbar_panel = cipher_view.BarPanel(parent=self)
-        self.botbar_panel = cipher_view.BarPanel(parent=self)
+        self.topbar_panel = cipher_view.BarPanel(parent=self)  # this is only decorative  # noqa: E501
+        self.botbar_panel = cipher_view.BarPanel(parent=self)  # this is only decorative  # noqa: E501
 
         sz = wx.BoxSizer(wx.VERTICAL)
         self.SetSizer(sz)

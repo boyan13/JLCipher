@@ -1,8 +1,8 @@
 # JLCipher
 
-👷🏻 **Still Work In Progress!** 🏗️
+🌵 👷🏻 **Still Work In Progress** 👷🏻 🌵
 
-As a fan of everything ***spy*** I've decided to create JLCipher - a small app for ciphering (and deciphering) text.
+As a fan of everything ***spy*** I've decided to create JLCipher - a small app for ciphering (and deciphering) text. It will possibly also display encodings and other niche things in the future.
 
 ![preview image](img/preview_gui.png)
 
@@ -11,6 +11,8 @@ As a fan of everything ***spy*** I've decided to create JLCipher - a small app f
 To-Be Supported Ciphers:
 * **Caesar Cipher**
 * **Vigenère Cipher**
+* **Unrestricted Caesar Cipher** - Shifts across the entirety of Unicode
+* **Unrestricted Vigenère Cipher** - Shifts across the entirety of Unicode
 
 Planned features:
 * CLI Support
