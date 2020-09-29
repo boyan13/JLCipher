@@ -55,7 +55,6 @@ class CipherPanel(wx.Panel):
         self.output_text.SetFont(font2)
         self.output_text.SetBackgroundColour(wx.Colour(12, 12, 17))
         self.output_text.SetForegroundColour(wx.Colour(255, 255, 255))
-        self.output_text.SetValue("Currently only working with English.")
 
         self.input_operation.SetSelection(0)
         self.input_operation.SetFont(font2)
