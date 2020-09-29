@@ -16,9 +16,18 @@ class CipherController:
         """
 
         if cipher_which == 'Caesar':
-            self.cipher = CaesarCipher(text=text, key=key, language="English")
+            self.cipher = CaesarCipher(
+                text=text,
+                key=key,
+                language="English"
+                )
+
         elif cipher_which == 'Vigenère':
-            pass  # todo
+            self.cipher = VigenereCipher(
+                text=text,
+                key=str(key),
+                language="English"
+                )
 
     def translate(self, to_cipher=True):
         """

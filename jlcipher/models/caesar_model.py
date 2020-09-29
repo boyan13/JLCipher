@@ -1,11 +1,15 @@
-import string
+from string import printable
 from .cipher_base_model import UnicodeCipher
 from ..mixins import WithCustomShiftingTable
 
 
 class CaesarCipher(UnicodeCipher, WithCustomShiftingTable):
     def __init__(self, text, key, language):
-        self.__class__.validate_key(key)
+        try:
+            self.__class__.validate_key(key)
+        except(ValueError):
+            raise RuntimeError("Bad key")
+
         UnicodeCipher.__init__(self, name="Caesar", text=text, key=key, language=language)  # noqa:E501
         WithCustomShiftingTable.__init__(self, self.supported_languages[language])  # noqa:E501
 
@@ -22,11 +26,11 @@ class CaesarCipher(UnicodeCipher, WithCustomShiftingTable):
 
             # Check if it is printable
             ch = chararr[i]
-            if ch not in string.printable:
+            if ch not in printable:
                 continue
 
             # Check if it is part of the language
-            if not self.inlanguage(ch):
+            if not self.__class__.inlanguage(ch, self.language):
                 continue
 
             # If uppercase: make it lowercase and flag it
@@ -55,11 +59,11 @@ class CaesarCipher(UnicodeCipher, WithCustomShiftingTable):
 
             # Check if it is printable
             ch = chararr[i]
-            if ch not in string.printable:
+            if ch not in printable:
                 continue
 
             # Check if it is part of the language
-            if not self.inlanguage(ch):
+            if not self.__class__.inlanguage(ch, self.language):
                 continue
 
             # If uppercase: make it lowercase and flag it

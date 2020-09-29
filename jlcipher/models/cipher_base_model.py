@@ -43,14 +43,15 @@ class UnicodeCipher(ABC):
     def decipher(self):
         return
 
-    def inlanguage(self, ch):
+    @classmethod
+    def inlanguage(cls, ch, lang_str):
         '''
         Checks if the given character is part
-        of the selected language (self.language).
+        of the passed language (language is passed as string).
         '''
 
         o = ord(ch)
-        l = self.__class__.supported_languages[self.language]  # noqa:E741
+        l = cls.supported_languages[lang_str]  # noqa:E741
 
         for t in l:
             if len(t) == 1:

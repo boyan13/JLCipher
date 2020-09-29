@@ -38,18 +38,31 @@ class MainApp(wx.App):
         text = self.frame.cipher_panel.input_text.GetValue()
         if text is None:  # Do nothing if there's no text inputted
             return
+        try:
+            self.cipher_controller.load(cipher_which, text, key)
+        except(RuntimeError) as exc:
+            if str(exc) == "Bad key":
+                wx.MessageBox(
+                    'This key is invalid.',
+                    'Bad key',
+                    wx.OK | wx.ICON_INFORMATION
+                    )
+            else:
+                raise
 
-        self.cipher_controller.load(cipher_which, text, key)
         try:
             output = self.cipher_controller.translate(to_cipher)
             self.frame.cipher_panel.output_text.SetValue(output)
-        except(ValueError):
-            wx.MessageBox('Values produced by this key go outside of recognized Unicode bounds. This key is invalid.',  # noqa: E501
-                          'Bad key.',
-                          wx.OK | wx.ICON_INFORMATION)
-        except(AttributeError):
-            # TODO implement vigenere and remove this except block
-            self.frame.cipher_panel.output_text.SetValue("Not implemented :(")
+        except(RuntimeError) as exc:
+            if str(exc) == "Bad key output":
+                wx.MessageBox(
+                    'Values produced by this key go outside of \
+                    recognized Unicode bounds. This key is invalid.',
+                    'Bad key.',
+                    wx.OK | wx.ICON_INFORMATION
+                    )
+            else:
+                raise
 
 
 class MainFrame(wx.Frame):
