@@ -1,6 +1,5 @@
 import wx
 from . import cipher_view
-from ..controllers.cipher_controller import CipherController
 
 
 class MainApp(wx.App):
@@ -8,7 +7,6 @@ class MainApp(wx.App):
 
     def __init__(self, mode):
         self.mode = mode
-        self.cipher_controller = CipherController()
 
         super().__init__()
 
@@ -16,40 +14,7 @@ class MainApp(wx.App):
         self.frame = MainFrame(parent=None, title="JLCipher: The Quick Cipher App", pos=(20, 20), mode=self.mode)  # noqa: E501
         self.frame.Show()
 
-        self.Bind(wx.EVT_BUTTON, self.translate, id=1)
-
         return True
-
-    def translate(self, event):
-        """
-        Gets the text from the input TextCtrl,
-         translates (ciphers or deciphers) it
-         and writes it to the output TextCtrl.
-        """
-
-        # Step 1: Extract all data and pass it to
-        # the controller so it can instantiate
-        # the appropriate cipher class
-        # (using the load() method)
-
-        to_cipher = self.frame.cipher_panel.get_operation()  # boolean; True=cipher; False=decipher # noqa:E501
-        cipher_which = self.frame.cipher_panel.get_cipher()
-        key = self.frame.cipher_panel.get_key()
-        text = self.frame.cipher_panel.input_text.GetValue()
-        if text is None:  # Do nothing if there's no text inputted
-            return
-
-        self.cipher_controller.load(cipher_which, text, key)
-        try:
-            output = self.cipher_controller.translate(to_cipher)
-            self.frame.cipher_panel.output_text.SetValue(output)
-        except(ValueError):
-            wx.MessageBox('Values produced by this key go outside of recognized Unicode bounds. This key is invalid.',  # noqa: E501
-                          'Bad key.',
-                          wx.OK | wx.ICON_INFORMATION)
-        except(AttributeError):
-            # TODO implement vigenere and remove this except block
-            self.frame.cipher_panel.output_text.SetValue("Not implemented :(")
 
 
 class MainFrame(wx.Frame):
