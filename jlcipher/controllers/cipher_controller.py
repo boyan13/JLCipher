@@ -9,7 +9,7 @@ class CipherController:
 
         self.cipher = None
 
-    def load(self, cipher_which, text, key):
+    def load(self, cipher_which, text, key, language):
         """
         Instantiates the appropriate cipher model
         and stores it in this class.
@@ -19,14 +19,14 @@ class CipherController:
             self.cipher = CaesarCipher(
                 text=text,
                 key=key,
-                language="English"
+                language=language
                 )
 
         elif cipher_which == 'Vigenère':
             self.cipher = VigenereCipher(
                 text=text,
                 key=str(key),
-                language="English"
+                language=language
                 )
 
     def translate(self, to_cipher=True):

@@ -1,4 +1,3 @@
-from string import printable
 from .cipher_base_model import UnicodeCipher
 from ..mixins import WithCustomShiftingTable
 
@@ -26,8 +25,6 @@ class CaesarCipher(UnicodeCipher, WithCustomShiftingTable):
 
             # Check if it is printable
             ch = chararr[i]
-            if ch not in printable:
-                continue
 
             # Check if it is part of the language
             if not self.__class__.inlanguage(ch, self.language):
@@ -59,8 +56,6 @@ class CaesarCipher(UnicodeCipher, WithCustomShiftingTable):
 
             # Check if it is printable
             ch = chararr[i]
-            if ch not in printable:
-                continue
 
             # Check if it is part of the language
             if not self.__class__.inlanguage(ch, self.language):
